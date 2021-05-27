@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysStuMapper">
+    
+    <resultMap type="SysStu" id="SysStuResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="tid"    column="tid"    />
+    </resultMap>
+
+    <sql id="selectSysStuVo">
+        select id, name, age, sex, tid from sys_stu
+    </sql>
+
+    <select id="selectSysStuList" parameterType="SysStu" resultMap="SysStuResult">
+        <include refid="selectSysStuVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="age != null "> and age = #{age}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="tid != null "> and tid = #{tid}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysStuById" parameterType="Long" resultMap="SysStuResult">
+        <include refid="selectSysStuVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysStu" parameterType="SysStu" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_stu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="age != null">age,</if>
+            <if test="sex != null">sex,</if>
+            <if test="tid != null">tid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="age != null">#{age},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="tid != null">#{tid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysStu" parameterType="SysStu">
+        update sys_stu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="tid != null">tid = #{tid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysStuById" parameterType="Long">
+        delete from sys_stu where id = #{id}
+    </delete>
+
+    <delete id="deleteSysStuByIds" parameterType="String">
+        delete from sys_stu where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

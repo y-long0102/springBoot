@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysTeaMapper">
+    
+    <resultMap type="SysTea" id="SysTeaResult">
+        <result property="tid"    column="tid"    />
+        <result property="tname"    column="tname"    />
+    </resultMap>
+
+    <sql id="selectSysTeaVo">
+        select tid, tname from sys_tea
+    </sql>
+
+    <select id="selectSysTeaList" parameterType="SysTea" resultMap="SysTeaResult">
+        <include refid="selectSysTeaVo"/>
+        <where>  
+            <if test="tname != null  and tname != ''"> and tname like concat('%', #{tname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectSysTeaById" parameterType="Long" resultMap="SysTeaResult">
+        <include refid="selectSysTeaVo"/>
+        where tid = #{tid}
+    </select>
+        
+    <insert id="insertSysTea" parameterType="SysTea" useGeneratedKeys="true" keyProperty="tid">
+        insert into sys_tea
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tname != null">tname,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tname != null">#{tname},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysTea" parameterType="SysTea">
+        update sys_tea
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tname != null">tname = #{tname},</if>
+        </trim>
+        where tid = #{tid}
+    </update>
+
+    <delete id="deleteSysTeaById" parameterType="Long">
+        delete from sys_tea where tid = #{tid}
+    </delete>
+
+    <delete id="deleteSysTeaByIds" parameterType="String">
+        delete from sys_tea where tid in 
+        <foreach item="tid" collection="array" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </delete>
+
+</mapper>
